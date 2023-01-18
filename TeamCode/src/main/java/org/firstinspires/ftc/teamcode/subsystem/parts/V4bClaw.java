@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.subsystem.parts;
 
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
 
-public class Claw {
+public class V4bClaw {
     protected CRServoImplEx v4bMoveRight;
     public static double v4bMoveRightStart = -1, v4bMoveRightEnd = 0.2;
 
@@ -17,7 +17,7 @@ public class Claw {
 
     protected CRServoImplEx clawRot;
     public static double clawRotStart = -.7, clawRotEnd = 1;
-    public Claw(CRServoImplEx v4bMoveRight, CRServoImplEx v4bMoveLeft, CRServoImplEx clawPitch, CRServoImplEx clawOpen, CRServoImplEx clawRot) {
+    public V4bClaw(CRServoImplEx v4bMoveRight, CRServoImplEx v4bMoveLeft, CRServoImplEx clawPitch, CRServoImplEx clawOpen, CRServoImplEx clawRot) {
         this.v4bMoveRight = v4bMoveRight;
         this.v4bMoveLeft = v4bMoveLeft;
         this.clawPitch = clawPitch;
