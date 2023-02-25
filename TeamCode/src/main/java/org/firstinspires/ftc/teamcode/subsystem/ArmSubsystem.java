@@ -1,74 +1,52 @@
 package org.firstinspires.ftc.teamcode.subsystem;
 
+import com.acmerobotics.dashboard.config.Config;
+import com.arcrobotics.ftclib.command.Command;
+import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
-import com.qualcomm.robotcore.hardware.CRServoImplEx;
-import org.firstinspires.ftc.teamcode.lib.Junctions;
-import org.firstinspires.ftc.teamcode.lib.errors.NotAValidJunctionException;
-import org.firstinspires.ftc.teamcode.lib.errors.NotAValidTickAmountException;
-import org.firstinspires.ftc.teamcode.subsystem.parts.Slides;
-import org.firstinspires.ftc.teamcode.subsystem.parts.V4bClaw;
+import org.firstinspires.ftc.teamcode.subsystem.constants.ArmConstants;
 
-public class ArmSubsystem {
-    private MotorEx slideR;
-    private MotorEx slideL;
-    protected CRServoImplEx v4bMoveRight;
-    protected CRServoImplEx v4bMoveLeft;
-    protected CRServoImplEx clawPitch;
-    protected CRServoImplEx clawOpen;
-    protected CRServoImplEx clawRot;
+import java.util.function.DoubleSupplier;
 
-    public V4bClaw claw;
-    public Slides slides;
-    public ArmSubsystem (MotorEx linSlideLeft, MotorEx linSlideRight, CRServoImplEx v4bMoveRight, CRServoImplEx v4bMoveLeft, CRServoImplEx clawPitch, CRServoImplEx clawOpen, CRServoImplEx clawRot) {
-        this.slideL = linSlideLeft;
-        this.slideR = linSlideRight;
-        this.v4bMoveLeft = v4bMoveLeft;
-        this.v4bMoveRight = v4bMoveRight;
-        this.clawOpen = clawOpen;
-        this.clawPitch = clawPitch;
-        this.clawRot = clawRot;
+@Config
+public class ArmSubsystem extends SubsystemBase {
 
-        slides = new Slides(this.slideL, this.slideR);
-        claw = new V4bClaw(this.v4bMoveRight, this.v4bMoveLeft, this.clawPitch, this.clawOpen, this.clawRot);
+    private final ServoEx left;
+    private final ServoEx right;
+    String mode="";
+    private final DoubleSupplier doubleSupplier;
+
+    public ArmSubsystem(ServoEx left, ServoEx right, DoubleSupplier doubleSupplier){
+        this.left = left;
+        this.right = right;
+        this.doubleSupplier = doubleSupplier;
     }
 
-    private void resetAll() {
-        //slides reset
-        //v4b auto goes to in position and opens claw
+    //write the function to rotate the servos between 0 and 1
+    public void home(){
+        left.setPosition(ArmConstants.startPosition);
+        right.setPosition(ArmConstants.startPosition);
+        mode="home";
     }
 
-    private void goToJunction(Junctions junction) throws NotAValidJunctionException {
-        switch (junction) {
-            case HIGH:
-                //if claw is not closed close claw
-                //go to high
-
-                break;
-            case MEDIUM:
-                //if claw is not closed close claw
-                //go to medium
-                break;
-            case LOW:
-                //if claw is not closed close claw
-                //go to low
-                break;
-            case GROUND:
-                //if claw is not closed close claw
-                //slides go to ground
-                break;
-            default:
-                throw new NotAValidJunctionException();
-        }
-    }
-    private void goTo(int ticks) throws NotAValidTickAmountException {
-        if (ticks > 2500) {
-            throw new NotAValidTickAmountException();
-        }
-        if(ticks < -2500) {
-            throw new NotAValidTickAmountException();
-        }
-        //slides go to ticks
+    public void away(){
+        left.setPosition(ArmConstants.endPosition);
+        right.setPosition(ArmConstants.endPosition);
+        mode="away";
     }
 
+    public Command runHomeCommand() {
+        return new InstantCommand(this::home,this);
+    }
 
+    public Command runAwayCommand() {
+        return new InstantCommand(this::away,this);
+    }
+
+    public String getMode() {
+        return mode;
+    }
 }
