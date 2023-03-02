@@ -8,6 +8,7 @@ public class Home extends CommandBase {
 
     public Home(ArmSubsystem arm){
         this.arm = arm;
+
         addRequirements(arm);
     }
 

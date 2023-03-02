@@ -55,8 +55,8 @@ public class DriveBaseOpMode extends CommandOpMode {
     protected void setUpHardwareDevices() {
         fR.setInverted(false);
         bL.setInverted(false);
-        bR.setInverted(true);
-        fL.setInverted(true);
+        bR.setInverted(false);
+        fL.setInverted(false);
     }
 
 
