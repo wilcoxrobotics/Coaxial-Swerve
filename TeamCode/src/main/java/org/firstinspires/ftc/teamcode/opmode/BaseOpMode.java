@@ -11,6 +11,7 @@ import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.CRServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.firstinspires.ftc.teamcode.subsystem.*;
 import org.firstinspires.ftc.teamcode.util.Junction;
@@ -27,6 +28,7 @@ public class BaseOpMode extends CommandOpMode {
     protected LiftSubsystem lift;
     protected ArmSubsystem arm;
     protected WristSubsystem wrist;
+    protected RevColorSensorV3 colorSensor;
     boolean rightFrontB = false, rightBackB=false, leftFrontB=false, leftBackB=false;
     protected RevIMU imu;
 
@@ -68,6 +70,7 @@ public class BaseOpMode extends CommandOpMode {
 
         wristServo = new SimpleServo(hardwareMap, "wrist", 0, 180);
 
+        colorSensor = hardwareMap.get(RevColorSensorV3.class, "color");
         imu = new RevIMU(hardwareMap);
         imu.init();
 
@@ -120,7 +123,10 @@ public class BaseOpMode extends CommandOpMode {
         tad("armR servo position", armR.getPosition());
         //claw telemetry
         tad("claw servo position", clawServo.getPosition());
-
+        telemetry.addData("Red", colorSensor.red());
+        telemetry.addData("Green", colorSensor.green());
+        telemetry.addData("Blue", colorSensor.blue());
+        telemetry.update();
         telemetry.update();
 
     }

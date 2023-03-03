@@ -11,7 +11,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     private final ServoEx left;
     private final ServoEx right;
-    public static double home = 0.35;
+    public static double home = 0.33;
     public static double away = 0;
     public static double mid = 0.175;
     String mode="";
