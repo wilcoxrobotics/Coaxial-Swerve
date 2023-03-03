@@ -25,21 +25,20 @@ public class MainOpMode extends BaseOpMode {
     public void initialize() {
         super.initialize();
 
-        // drive
+        // drivew
 
-        robotCentricDrive = new DriveRobotCentric(drive, gamepadEx1::getRightX,
-                gamepadEx1::getLeftY, gamepadEx1::getLeftX );
+        robotCentricDrive = new DriveRobotCentric(drive, gamepadEx1::getLeftX,
+                gamepadEx1::getLeftY, gamepadEx1::getRightX);
 
-        slowMode = new DriveSlowMode(drive, gamepadEx1::getLeftX, gamepadEx1::getLeftY, gamepadEx1::getRightX);
-        //drive.setWeightedDrivePower(new Pose2d(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x));
-//        updateLift = new UpdateLift(lift);
+        slowMode = new DriveSlowMode(drive, gamepadEx1::getLeftX,
+                gamepadEx1::getLeftY, gamepadEx1::getRightX);
+        //drive.setWeightedDrivePower(new Pose2d(-gam9*
 
         gb1(GamepadKeys.Button.LEFT_BUMPER)
                 .whileHeld(slowMode);
 
         gb1(GamepadKeys.Button.LEFT_BUMPER)
                 .toggleWhenPressed(new Grab(claw), new Release(claw));
-
 
         gb1(GamepadKeys.Button.A)
                 .whenPressed(new SetJunction(lift, Junction.NONE));

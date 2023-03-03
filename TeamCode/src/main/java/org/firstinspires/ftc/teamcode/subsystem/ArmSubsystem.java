@@ -4,22 +4,17 @@ import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.hardware.ServoEx;
-import com.arcrobotics.ftclib.hardware.motors.MotorEx;
-import org.firstinspires.ftc.teamcode.subsystem.constants.ArmConstants;
-
-import java.util.function.DoubleSupplier;
 
 @Config
 public class ArmSubsystem extends SubsystemBase {
 
     private final ServoEx left;
     private final ServoEx right;
-    private final double home = 0.4;
-    private final double away = 0;
+    public static double home = 0.35;
+    public static double away = 0;
+    public static double mid = 0.175;
     String mode="";
-
     public ArmSubsystem(ServoEx left, ServoEx right){
         this.left = left;
         this.right = right;
@@ -36,6 +31,11 @@ public class ArmSubsystem extends SubsystemBase {
         left.setPosition(away);
         right.setPosition(away);
         mode="away";
+    }
+
+    public void mid() {
+        left.setPosition(mid);
+        right.setPosition(mid);
     }
 
     public Command runHomeCommand() {

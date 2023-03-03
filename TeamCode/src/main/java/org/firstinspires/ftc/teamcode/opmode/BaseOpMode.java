@@ -44,7 +44,7 @@ public class BaseOpMode extends CommandOpMode {
         setUp();
 
         drive = new DriveSubsystem(leftBack, leftFront, rightBack, rightFront);
-        lift = new LiftSubsystem(liftLeft,  leftBack, gamepadEx2::getLeftY );
+        lift = new LiftSubsystem(liftLeft,  rightFront, gamepadEx2::getLeftY );
         claw = new ClawSubsystem(clawServo);
         arm = new ArmSubsystem(armL,armR);
         wrist = new WristSubsystem(wristServo);
@@ -73,13 +73,15 @@ public class BaseOpMode extends CommandOpMode {
         imu = new RevIMU(hardwareMap);
         imu.init();
 
-
     }
     protected void setUp(){
-        rightFront.setInverted(rightFrontB);
-        rightBack.setInverted(rightBackB);
-        leftBack.setInverted(leftBackB);
-        leftFront.setInverted(leftFrontB);
+
+//        leftFront.setInverted(true);
+        leftBack.setInverted(true);
+        wristServo.setInverted(true);
+
+//        rightBack.setInverted(true);
+
 
         armR.setInverted(true);
 
@@ -88,7 +90,7 @@ public class BaseOpMode extends CommandOpMode {
         rightBack.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         rightFront.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
-        leftBack.resetEncoder();
+        rightBack.resetEncoder();
 
         //liftLeft.setRunMode(Motor.RunMode.RawPower);
         //liftLeft.resetEncoder();
