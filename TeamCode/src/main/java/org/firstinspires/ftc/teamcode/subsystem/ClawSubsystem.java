@@ -9,8 +9,9 @@ import com.arcrobotics.ftclib.hardware.SimpleServo;
 public class ClawSubsystem extends SubsystemBase {
     private final SimpleServo claw;
 
-    public static double grabPosition = 0.1;
-    public static double releasePosition = 0.7;
+    public static double grabPosition = 0.4;
+    public static double releasePosition = 0.65
+            ;
 
 
     public ClawSubsystem(SimpleServo claw) {
