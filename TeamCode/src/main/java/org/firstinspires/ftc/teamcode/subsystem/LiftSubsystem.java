@@ -17,7 +17,7 @@ import java.util.function.DoubleSupplier;
 public class LiftSubsystem extends SubsystemBase {
 
     private final MotorEx  encoder;
-    private final DcMotorSimple lift;
+    private final DcMotorSimple liftL, liftR;
 
     private Junction currentGoal;
 
@@ -48,14 +48,16 @@ public class LiftSubsystem extends SubsystemBase {
 
     private double output;
 
-    public LiftSubsystem(DcMotorSimple lift, MotorEx encoder, DoubleSupplier doubleSupplier) {
-        this.lift = lift;
+    public LiftSubsystem(DcMotorSimple liftL, DcMotorSimple liftR,  MotorEx encoder, DoubleSupplier doubleSupplier) {
+        this.liftL = liftL;
+        this.liftR=liftR;
         this.encoder = encoder;
         this.doubleSupplier = doubleSupplier;
     }
 
     public void update(){
-        lift.setPower(power);
+        liftL.setPower(power);
+        liftR.setPower(power);
     }
 
     public void setJunction(Junction junction){
@@ -115,11 +117,13 @@ public class LiftSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         if(doubleSupplier.getAsDouble() != 0) {
-            lift.setPower(doubleSupplier.getAsDouble() / slowFactor);
+            liftL.setPower(doubleSupplier.getAsDouble() / slowFactor);
+            liftR.setPower(doubleSupplier.getAsDouble() / slowFactor);
             controller.setGoal(encoder.getCurrentPosition());
         } else {
             output = controller.calculate(encoder.getCurrentPosition()) + kG;
-            lift.setPower(output);
+            liftL.setPower(output);
+            liftR.setPower(output);
         }
     }
 }

@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.util.Junction;
 public class BaseOpMode extends CommandOpMode {
 
     protected MotorEx leftBack, leftFront, rightBack, rightFront; //liftLeft;
-    protected DcMotorSimple liftLeft;
+    protected DcMotorSimple liftLeft, liftRight;
 
     protected SimpleServo clawServo, armL, armR, wristServo;
 
@@ -44,7 +44,7 @@ public class BaseOpMode extends CommandOpMode {
         setUp();
 
         drive = new DriveSubsystem(leftBack, leftFront, rightBack, rightFront);
-        lift = new LiftSubsystem(liftLeft,  rightFront, gamepadEx2::getLeftY );
+        lift = new LiftSubsystem(liftLeft, liftRight,  rightFront, gamepadEx2::getLeftY );
         claw = new ClawSubsystem(clawServo);
         arm = new ArmSubsystem(armL,armR);
         wrist = new WristSubsystem(wristServo);
@@ -62,6 +62,7 @@ public class BaseOpMode extends CommandOpMode {
         rightFront = new MotorEx(hardwareMap, "rightFront");
 
         liftLeft  = hardwareMap.get(DcMotorSimple.class, "slideL");
+        liftRight= hardwareMap.get(DcMotorSimple.class, "slideR");
 
         clawServo = new SimpleServo(hardwareMap, "claw", 0, 120);
         armL = new SimpleServo(hardwareMap, "armL", 0, 360);
@@ -79,7 +80,7 @@ public class BaseOpMode extends CommandOpMode {
 //        leftFront.setInverted(true);
         leftBack.setInverted(true);
         wristServo.setInverted(true);
-
+        liftRight.setDirection(DcMotorSimple.Direction.REVERSE);
 //        rightBack.setInverted(true);
 
 
