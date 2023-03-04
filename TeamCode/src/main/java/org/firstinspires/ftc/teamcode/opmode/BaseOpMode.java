@@ -7,12 +7,14 @@ import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.RevIMU;
+import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.CRServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 import org.firstinspires.ftc.teamcode.subsystem.*;
 import org.firstinspires.ftc.teamcode.util.Junction;
 
@@ -21,13 +23,14 @@ public class BaseOpMode extends CommandOpMode {
     protected MotorEx leftBack, leftFront, rightBack, rightFront; //liftLeft;
     protected DcMotorSimple liftLeft;
 
-    protected SimpleServo clawServo, armL, armR, wristServo;
+    protected SimpleServo  armL, armR, wristServo, clawServo;
 
     protected ClawSubsystem claw;
     protected DriveSubsystem drive;
     protected LiftSubsystem lift;
     protected ArmSubsystem arm;
     protected WristSubsystem wrist;
+    protected WristSubsystem wrist1;
     protected RevColorSensorV3 colorSensor;
     boolean rightFrontB = false, rightBackB=false, leftFrontB=false, leftBackB=false;
     protected RevIMU imu;
@@ -45,7 +48,8 @@ public class BaseOpMode extends CommandOpMode {
 
         drive = new DriveSubsystem(leftBack, leftFront, rightBack, rightFront);
         lift = new LiftSubsystem(liftLeft,  rightFront, gamepadEx2::getLeftY );
-        claw = new ClawSubsystem(clawServo);
+//        claw = new ClawSubsystem(clawServo);
+        wrist1 = new WristSubsystem(clawServo);
         arm = new ArmSubsystem(armL,armR);
         wrist = new WristSubsystem(wristServo);
 
@@ -63,7 +67,7 @@ public class BaseOpMode extends CommandOpMode {
 
         liftLeft  = hardwareMap.get(DcMotorSimple.class, "slideL");
 
-        clawServo = new SimpleServo(hardwareMap, "claw", 0, 120);
+        clawServo = new SimpleServo(hardwareMap, "claw", 0, 360);
         armL = new SimpleServo(hardwareMap, "armL", 0, 360);
 
         armR = new SimpleServo(hardwareMap, "armR", 0, 360);
@@ -80,15 +84,10 @@ public class BaseOpMode extends CommandOpMode {
 //        leftFront.setInverted(true);
         leftBack.setInverted(true);
         wristServo.setInverted(true);
+        clawServo.setInverted(true);
 //        rightBack.setInverted(true);
 
-
         armR.setInverted(true);
-
-        leftBack.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-        leftFront.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-        rightBack.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-        rightFront.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
         rightBack.resetEncoder();
 
@@ -126,7 +125,6 @@ public class BaseOpMode extends CommandOpMode {
         telemetry.addData("Red", colorSensor.red());
         telemetry.addData("Green", colorSensor.green());
         telemetry.addData("Blue", colorSensor.blue());
-        telemetry.update();
         telemetry.update();
 
     }

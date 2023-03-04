@@ -24,13 +24,6 @@ public class WristSubsystem extends SubsystemBase {
         mode="flip";
     }
 
-    public Command runHomeCommand() {
-        return new InstantCommand(this::home, this);
-    }
-
-    public Command runFlipCommand() {
-        return new InstantCommand(this::flip, this);
-    }
 
     public static String getMode() {
         return mode;

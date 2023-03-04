@@ -12,11 +12,11 @@ import org.firstinspires.ftc.teamcode.subsystem.WristSubsystem;
 import org.firstinspires.ftc.teamcode.util.Junction;
 
 public class AutoGrabRotateMoveLift extends SequentialCommandGroup {
-    public AutoGrabRotateMoveLift(ClawSubsystem claw, ArmSubsystem arm, WristSubsystem wrist, LiftSubsystem lift) {
+    public AutoGrabRotateMoveLift( ArmSubsystem arm, WristSubsystem wrist, LiftSubsystem lift) {
         addCommands(
-                new GrabRotateLift(claw, arm, lift, wrist, Junction.HIGH)
+                new GrabRotateLift( arm, lift, wrist, Junction.HIGH)
         );
-        addRequirements(claw, arm, wrist, lift);
+        addRequirements( arm, wrist, lift);
     }
 
 }

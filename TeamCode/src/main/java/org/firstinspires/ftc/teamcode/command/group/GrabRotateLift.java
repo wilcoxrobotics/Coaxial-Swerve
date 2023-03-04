@@ -14,9 +14,9 @@ import org.firstinspires.ftc.teamcode.util.DelayedCommand;
 import org.firstinspires.ftc.teamcode.util.Junction;
 
 public class GrabRotateLift extends SequentialCommandGroup {
-    public GrabRotateLift(ClawSubsystem claw, ArmSubsystem arm, LiftSubsystem lift, WristSubsystem wrist, Junction junction) {
+    public GrabRotateLift( ArmSubsystem arm, LiftSubsystem lift, WristSubsystem wrist, Junction junction) {
         addCommands(
-                new Grab(claw),
+
                 new ParallelCommandGroup(
                         new SetJunction(lift, junction),
                         new DelayedCommand(
@@ -25,6 +25,6 @@ public class GrabRotateLift extends SequentialCommandGroup {
                         )
                 )
         );
-        addRequirements(claw, arm, wrist, lift);
+        addRequirements( arm, wrist, lift);
     }
 }

@@ -1,36 +1,33 @@
 package org.firstinspires.ftc.teamcode.subsystem;
 
-import com.acmerobotics.dashboard.config.Config;
-import com.arcrobotics.ftclib.command.Command;
-import com.arcrobotics.ftclib.command.InstantCommand;
+
 import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.arcrobotics.ftclib.hardware.SimpleServo;
-@Config
+import com.arcrobotics.ftclib.hardware.ServoEx;
+import org.firstinspires.ftc.teamcode.subsystem.constants.WristConstants;
+
+import java.util.function.BooleanSupplier;
+
 public class ClawSubsystem extends SubsystemBase {
-    private final SimpleServo claw;
-
-    public static double grabPosition = 0.4;
-    public static double releasePosition = 0.65
-            ;
-
-
-    public ClawSubsystem(SimpleServo claw) {
-        this.claw = claw;
+    ServoEx wrist;
+    static String mode="";
+    public static boolean pos;
+    public ClawSubsystem(ServoEx wrist) {
+        this.wrist = wrist;
     }
 
-    public void grab(){
-        claw.setPosition(grabPosition);
+    public void grab() {
+        wrist.setPosition(WristConstants.home);
+        mode= "home";
+        pos = true;
+    }
+    public void release() {
+        wrist.setPosition(WristConstants.flip);
+        mode="flip";
+        pos = false;
     }
 
-    public void release(){
-        claw.setPosition(releasePosition);
-    }
 
-    public Command runGrabCommand() {
-        return new InstantCommand(this::grab, this);
-    }
-
-    public Command runReleaseCommand() {
-        return new InstantCommand(this::release, this);
+    public static String getMode() {
+        return mode;
     }
 }
