@@ -1,41 +1,68 @@
 package org.firstinspires.ftc.teamcode.subsystem;
 
+import android.location.GnssMeasurement;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.ServoEx;
+import com.qualcomm.robotcore.hardware.Gamepad;
+
+import java.util.function.DoubleSupplier;
 
 @Config
 public class ArmSubsystem extends SubsystemBase {
 
     private final ServoEx left;
     private final ServoEx right;
-    public static double home = 0.7;
-    public static double away = 0.15;
-    public static double mid = 0.4;
+    public static double home = 0.86;
+    public static double away = 0.32;
+    public static double scaleFactor = .25;
+    public static double mid = 0.55;
+    public double valueRight = .32;
+    public double valueLeft = .32;
+
+    public DoubleSupplier adouble;
     String mode="";
     public ArmSubsystem(ServoEx left, ServoEx right){
         this.left = left;
         this.right = right;
     }
 
+    public ArmSubsystem(ServoEx left, ServoEx right, DoubleSupplier adouble){
+        this.left = left;
+        this.right = right;
+        this.adouble = adouble;
+    }
+
     //write the function to rotate the servos between 0 and 1
     public void home(){
-        left.setPosition(home);
-        right.setPosition(home);
+        valueRight = home;
+        valueLeft = home;
+//        left.setPosition(home);
+//        right.setPosition(home);
         mode="home";
     }
 
     public void away(){
-        left.setPosition(away);
-        right.setPosition(away);
+        valueRight = away;
+        valueLeft = away;
+//        left.setPosition(away);
+//        right.setPosition(away);
         mode="away";
     }
 
     public void mid() {
-        left.setPosition(mid);
-        right.setPosition(mid);
+        valueLeft = mid;
+        valueRight = mid;
+//        left.setPosition(mid);
+//        right.setPosition(mid);
+    }
+
+    @Override
+    public void periodic(){
+        left.setPosition(valueLeft+(scaleFactor* adouble.getAsDouble()));
+        right.setPosition(valueRight+(scaleFactor*adouble.getAsDouble()));
     }
 
     public Command runHomeCommand() {

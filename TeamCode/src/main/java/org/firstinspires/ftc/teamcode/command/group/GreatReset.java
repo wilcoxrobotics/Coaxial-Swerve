@@ -12,11 +12,11 @@ import org.firstinspires.ftc.teamcode.util.DelayedCommand;
 import org.firstinspires.ftc.teamcode.util.Junction;
 
 public class GreatReset extends SequentialCommandGroup {
-    public GreatReset(ClawSubsystem claw, ArmSubsystem arm, WristSubsystem wrist, LiftSubsystem lift) {
+    public GreatReset(ClawSubsystem claw, ArmSubsystem arm, WristSubsystem wrist, WristSubsystem wrist1, LiftSubsystem lift) {
         addCommands(
                 new Release(claw),
                 new ParallelCommandGroup(
-                        new UnFlipAndHome(wrist, arm),
+                        new UnFlipAndHome(wrist, arm, wrist1),
                         new DelayedCommand(new SetJunction(lift, Junction.NONE), 200)
                 )
         );

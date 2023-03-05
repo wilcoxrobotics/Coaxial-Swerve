@@ -3,9 +3,9 @@ package org.firstinspires.ftc.teamcode.subsystem;
 import android.util.Log;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.arcrobotics.ftclib.controller.PIDController;
+
 import com.arcrobotics.ftclib.controller.wpilibcontroller.ProfiledPIDController;
-import com.arcrobotics.ftclib.hardware.motors.CRServo;
+
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.arcrobotics.ftclib.trajectory.TrapezoidProfile;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -28,12 +28,12 @@ public class LiftSubsystem extends SubsystemBase {
     public static int medium = 1800;
     public static int high = 2500;
 
-    public static double kP = 0.01;
+    public static double kP = 0.012;
     public static double kI = 0;
-    public static double kD = 0.0003;
-    public static double kG = 0.1;
-    public static double maxVelocity = 2000;
-    public static double maxAcceleration = 2000;
+    public static double kD = 0.0005;
+    public static double kG = 0.01;
+    public static double maxVelocity = 4000;
+    public static double maxAcceleration = 7000;
     private final ProfiledPIDController controller = new ProfiledPIDController(kP, kI, kD,
             new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration));
 
@@ -82,6 +82,19 @@ public class LiftSubsystem extends SubsystemBase {
                 controller.setGoal(high);
                 break;
         }
+    }
+
+    public void setHigh() {
+        setJunction(Junction.HIGH);
+    }
+    public void setNone() {
+        setJunction(Junction.NONE);
+    }
+    public void setLow() {
+        setJunction(Junction.LOW);
+    }
+    public void setMedium() {
+        setJunction(Junction.MEDIUM);
     }
 
     public boolean atTarget(){
