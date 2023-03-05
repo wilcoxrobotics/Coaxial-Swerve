@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystem;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.ServoEx;
+import org.firstinspires.ftc.teamcode.subsystem.constants.ClawConstants;
 import org.firstinspires.ftc.teamcode.subsystem.constants.WristConstants;
 
 import java.util.function.BooleanSupplier;
@@ -16,12 +17,12 @@ public class ClawSubsystem extends SubsystemBase {
     }
 
     public void grab() {
-        wrist.setPosition(WristConstants.home);
+        wrist.setPosition(ClawConstants.grab);
         mode= "home";
         pos = true;
     }
     public void release() {
-        wrist.setPosition(WristConstants.flip);
+        wrist.setPosition(ClawConstants.release);
         mode="flip";
         pos = false;
     }

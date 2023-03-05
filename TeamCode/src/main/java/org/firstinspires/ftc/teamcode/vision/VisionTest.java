@@ -3,13 +3,23 @@ package org.firstinspires.ftc.teamcode.vision;
 import android.annotation.SuppressLint;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.arcrobotics.ftclib.hardware.SimpleServo;
+import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.command.arm.Mid;
+import org.firstinspires.ftc.teamcode.command.claw.Release;
+import org.firstinspires.ftc.teamcode.command.wrist.UnFlip;
+import org.firstinspires.ftc.teamcode.opmode.auton.AutonLeftCycle;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.subsystem.ArmSubsystem;
+import org.firstinspires.ftc.teamcode.subsystem.ClawSubsystem;
+import org.firstinspires.ftc.teamcode.subsystem.WristSubsystem;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -19,7 +29,6 @@ import org.openftc.apriltag.AprilTagDetection;
 
 import java.util.ArrayList;
 
-@Disabled
 @Autonomous(name = "Signal Sleeve Test")
 @Config
 public class VisionTest extends LinearOpMode
@@ -48,14 +57,14 @@ public class VisionTest extends LinearOpMode
     int MIDDLE = 2;
     int RIGHT = 3;
 
+    public static boolean hasRanAuto;
+
     AprilTagDetection tagOfInterest = null;
-
     @Override
-
     public void runOpMode()
     {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "cam"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
@@ -81,6 +90,25 @@ public class VisionTest extends LinearOpMode
          * The INIT-loop:
          * This REPLACES waitForStart!
          */
+        DcMotorSimple liftMotor = hardwareMap.get(DcMotorSimple.class, "slideL");
+        MotorEx rightFront = new MotorEx(hardwareMap, "rightFront");
+        SimpleServo clawServo = new SimpleServo(hardwareMap, "claw", 0, 360);
+        SimpleServo armL = new SimpleServo(hardwareMap, "armL", 0, 360);
+        SimpleServo armR = new SimpleServo(hardwareMap, "armR", 0, 360);
+        SimpleServo wristServo = new SimpleServo(hardwareMap, "wrist", 0, 180);
+        DcMotorSimple liftLeft = hardwareMap.get(DcMotorSimple.class, "slideL");
+        AutonLeftCycle.DRIVE_PHASE currentState = AutonLeftCycle.DRIVE_PHASE.IDLE;
+        ArmSubsystem arm = new ArmSubsystem(armL, armR);
+        ClawSubsystem claw = new ClawSubsystem(clawServo);
+        WristSubsystem wrist = new WristSubsystem(wristServo);
+        claw.release();
+        arm.mid();
+        wrist.home();
+
+        waitForStart();
+
+
+        initShit();
         while (!isStarted() && !isStopRequested())
         {
             ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
@@ -162,7 +190,7 @@ public class VisionTest extends LinearOpMode
             //default trajectory here if preferred
         }else if(tagOfInterest.id == LEFT){
             parkTrajectory = drive.trajectorySequenceBuilder(new Pose2d())
-                    .forward(forward)
+                    .forward(-forward)
                     .strafeLeft(strafe)
                     //.strafeLeft(40)
                     .build();
@@ -170,23 +198,33 @@ public class VisionTest extends LinearOpMode
             //left trajectory
         }else if(tagOfInterest.id == MIDDLE){
             parkTrajectory = drive.trajectorySequenceBuilder(new Pose2d())
-                    .forward(forward)
+                    .forward(-forward)
                     .build();
             //middle trajectory
 
         }else{
             parkTrajectory = drive.trajectorySequenceBuilder(new Pose2d())
-                    .forward(forward)
+                    .forward(-forward)
                     .strafeRight(strafe)
                     .build();
-
         }
 
 
         /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
-        while (opModeIsActive()) {sleep(20);}
+        while (opModeIsActive()) {
+            while (opModeIsActive() && !isStopRequested()) {
+                switch (currentState) {
+                    case WAIT_FOR_PRELOAD:
+                        drive.followTrajectorySequence(parkTrajectory);
+                        currentState = AutonLeftCycle.DRIVE_PHASE.SLIDE;
+                        break;
+                }
+            }
+        }
     }
+    public void initShit(){
 
+    }
     @SuppressLint("DefaultLocale")
     void tagToTelemetry(AprilTagDetection detection)
     {

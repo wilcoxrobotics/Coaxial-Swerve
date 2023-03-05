@@ -26,7 +26,7 @@ public class BaseOpMode extends CommandOpMode {
     protected LiftSubsystem lift;
     protected ArmSubsystem arm;
     protected WristSubsystem wrist;
-    protected WristSubsystem wrist1;
+//    protected WristSubsystem wrist1;
     protected RevColorSensorV3 colorSensor;
     protected RevIMU imu;
 
@@ -43,7 +43,8 @@ public class BaseOpMode extends CommandOpMode {
 
         drive = new DriveSubsystem(leftBack, leftFront, rightBack, rightFront);
         lift = new LiftSubsystem(liftLeft,  rightFront, gamepadEx1::getRightY );
-        wrist1 = new WristSubsystem(clawServo);
+//        wrist1 = new WristSubsystem(clawServo);
+        claw = new ClawSubsystem(clawServo);
         arm = new ArmSubsystem(armL,armR);
         wrist = new WristSubsystem(wristServo);
 

@@ -40,7 +40,7 @@ public class LiftSubsystem extends SubsystemBase {
     public static double power = 1;
     public static int threshold = 20;
 
-    public static double slowFactor = 1.5;
+    public static double slowFactor = 4;
 
     private final DoubleSupplier doubleSupplier;
 
@@ -128,7 +128,7 @@ public class LiftSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         if(doubleSupplier.getAsDouble() != 0) {
-            liftL.setPower(doubleSupplier.getAsDouble() / slowFactor);
+            liftL.setPower(-doubleSupplier.getAsDouble() / (doubleSupplier.getAsDouble() >= 0 ? 1 : slowFactor));
             controller.setGoal(encoder.getCurrentPosition());
         } else {
             output = controller.calculate(encoder.getCurrentPosition()) + kG;

@@ -55,7 +55,7 @@ public class AutonLeftCycle extends LinearOpMode {
 
     Pose2d startPose = new Pose2d(0, 0, Math.toRadians(180));
 
-    private enum DRIVE_PHASE {
+    public enum DRIVE_PHASE {
         WAIT_FOR_PRELOAD,
         SLIDE,
         PRELOAD,
