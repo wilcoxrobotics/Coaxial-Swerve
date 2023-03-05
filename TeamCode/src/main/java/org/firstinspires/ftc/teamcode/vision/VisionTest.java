@@ -86,29 +86,30 @@ public class VisionTest extends LinearOpMode
 
         telemetry.setMsTransmissionInterval(50);
 
+        AutonLeftCycle.DRIVE_PHASE currentState = AutonLeftCycle.DRIVE_PHASE.IDLE;
         /*
          * The INIT-loop:
          * This REPLACES waitForStart!
          */
-        DcMotorSimple liftMotor = hardwareMap.get(DcMotorSimple.class, "slideL");
-        MotorEx rightFront = new MotorEx(hardwareMap, "rightFront");
-        SimpleServo clawServo = new SimpleServo(hardwareMap, "claw", 0, 360);
-        SimpleServo armL = new SimpleServo(hardwareMap, "armL", 0, 360);
-        SimpleServo armR = new SimpleServo(hardwareMap, "armR", 0, 360);
-        SimpleServo wristServo = new SimpleServo(hardwareMap, "wrist", 0, 180);
-        DcMotorSimple liftLeft = hardwareMap.get(DcMotorSimple.class, "slideL");
-        AutonLeftCycle.DRIVE_PHASE currentState = AutonLeftCycle.DRIVE_PHASE.IDLE;
-        ArmSubsystem arm = new ArmSubsystem(armL, armR);
-        ClawSubsystem claw = new ClawSubsystem(clawServo);
-        WristSubsystem wrist = new WristSubsystem(wristServo);
-        claw.release();
-        arm.mid();
-        wrist.home();
+//        DcMotorSimple liftMotor = hardwareMap.get(DcMotorSimple.class, "slideL");
+//        MotorEx rightFront = new MotorEx(hardwareMap, "rightFront");
+//        SimpleServo clawServo = new SimpleServo(hardwareMap, "claw", 0, 360);
+//        SimpleServo armL = new SimpleServo(hardwareMap, "armL", 0, 360);
+//        SimpleServo armR = new SimpleServo(hardwareMap, "armR", 0, 360);
+//        SimpleServo wristServo = new SimpleServo(hardwareMap, "wrist", 0, 180);
+//        DcMotorSimple liftLeft = hardwareMap.get(DcMotorSimple.class, "slideL");
+//        AutonLeftCycle.DRIVE_PHASE currentState = AutonLeftCycle.DRIVE_PHASE.IDLE;
+//        ArmSubsystem arm = new ArmSubsystem(armL, armR);
+//        ClawSubsystem claw = new ClawSubsystem(clawServo);
+//        WristSubsystem wrist = new WristSubsystem(wristServo);
+//        claw.release();
+//        arm.mid();
+//        wrist.home();
 
         waitForStart();
 
 
-        initShit();
+        //initShit();
         while (!isStarted() && !isStopRequested())
         {
             ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
@@ -184,6 +185,7 @@ public class VisionTest extends LinearOpMode
         {
             telemetry.addLine("No tag snapshot available, it was never sighted during the init loop :(");
             telemetry.update();
+
         }
         TrajectorySequence parkTrajectory = null;
         if(tagOfInterest == null){
@@ -209,10 +211,9 @@ public class VisionTest extends LinearOpMode
                     .build();
         }
 
-
         /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
-        while (opModeIsActive()) {
             while (opModeIsActive() && !isStopRequested()) {
+                currentState = AutonLeftCycle.DRIVE_PHASE.WAIT_FOR_PRELOAD;
                 switch (currentState) {
                     case WAIT_FOR_PRELOAD:
                         drive.followTrajectorySequence(parkTrajectory);
@@ -220,7 +221,7 @@ public class VisionTest extends LinearOpMode
                         break;
                 }
             }
-        }
+
     }
     public void initShit(){
 

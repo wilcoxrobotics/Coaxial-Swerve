@@ -140,14 +140,14 @@ public class AutonLeftCycle extends LinearOpMode {
         while (opModeIsActive() && !isStopRequested()) {
             switch (currentState) {
                 case WAIT_FOR_PRELOAD:
-                    sleep(1000);
-                    arm.away();
-                    sleep(1000);
-                    wrist1.flip();
-                    sleep(500);
-                    arm.mid();
-                    sleep(500);
-                    wrist.home();
+//                    sleep(1000);
+//                    arm.away();
+//                    sleep(1000);
+//                    wrist1.flip();
+//                    sleep(500);
+//                    arm.mid();
+//                    sleep(500);
+//                    wrist.home();
                     if(tagOfInterest == null) {
                             drive.followTrajectoryAsync(drive.trajectoryBuilder(drive.getPoseEstimate())
                                     .strafeLeft(15)
@@ -176,7 +176,7 @@ public class AutonLeftCycle extends LinearOpMode {
 
                     break;
                 case SLIDE:
-                    wrist.flip();
+                    //wrist.flip();
                     sleep(500);
                     currentState = DRIVE_PHASE.PARK;
                     break;
