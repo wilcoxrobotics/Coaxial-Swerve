@@ -7,14 +7,10 @@ import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.RevIMU;
-import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
-import com.arcrobotics.ftclib.hardware.motors.CRServo;
-import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.ServoImplEx;
 import org.firstinspires.ftc.teamcode.subsystem.*;
 import org.firstinspires.ftc.teamcode.util.Junction;
 
@@ -32,7 +28,6 @@ public class BaseOpMode extends CommandOpMode {
     protected WristSubsystem wrist;
     protected WristSubsystem wrist1;
     protected RevColorSensorV3 colorSensor;
-    boolean rightFrontB = false, rightBackB=false, leftFrontB=false, leftBackB=false;
     protected RevIMU imu;
 
     protected GamepadEx gamepadEx1;
@@ -47,8 +42,7 @@ public class BaseOpMode extends CommandOpMode {
         setUp();
 
         drive = new DriveSubsystem(leftBack, leftFront, rightBack, rightFront);
-        lift = new LiftSubsystem(liftLeft,  rightFront, gamepadEx2::getLeftY );
-//        claw = new ClawSubsystem(clawServo);
+        lift = new LiftSubsystem(liftLeft,  rightFront, gamepadEx1::getRightY );
         wrist1 = new WristSubsystem(clawServo);
         arm = new ArmSubsystem(armL,armR);
         wrist = new WristSubsystem(wristServo);
@@ -80,19 +74,11 @@ public class BaseOpMode extends CommandOpMode {
 
     }
     protected void setUp(){
-
-//        leftFront.setInverted(true);
         leftBack.setInverted(true);
         wristServo.setInverted(true);
         clawServo.setInverted(true);
-//        rightBack.setInverted(true);
-
         armR.setInverted(true);
-
         rightBack.resetEncoder();
-
-        //liftLeft.setRunMode(Motor.RunMode.RawPower);
-        //liftLeft.resetEncoder();
     }
 
     @Override
@@ -102,25 +88,16 @@ public class BaseOpMode extends CommandOpMode {
         tad("leftFront Power", leftFront.motor.getPower());
         tad("rightBack Power", rightBack.motor.getPower());
         tad("rightFront Power", rightFront.motor.getPower());
-
         tad("liftLeft Power", liftLeft.getPower());
         tad("liftLeft Position", leftBack.getCurrentPosition());
-
-
         tad("Heading", imu.getHeading());
-
         tad("Current Junction", lift.getCurrentJunction());
-
         tad("output", lift.getOutput());
         tad("current target", lift.getCurrentTarget());
         tad("current junction", lift.getCurrentJunction());
-
-        //wrist telemetry
         tad("wrist servo position", wristServo.getPosition());
-        //arm telemetry
         tad("armL servo position", armL.getPosition());
         tad("armR servo position", armR.getPosition());
-        //claw telemetry
         tad("claw servo position", clawServo.getPosition());
         telemetry.addData("Red", colorSensor.red());
         telemetry.addData("Green", colorSensor.green());

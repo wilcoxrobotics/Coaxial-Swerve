@@ -25,8 +25,8 @@ public class LiftSubsystem extends SubsystemBase {
     public static int none = 0;
     public static int ground = 150;
     public static int low = 800; // 837
-    public static int medium = 1800;
-    public static int high = 2500;
+    public static int medium = 1650;
+    public static int high = 2350;
 
     public static double kP = 0.012;
     public static double kI = 0;

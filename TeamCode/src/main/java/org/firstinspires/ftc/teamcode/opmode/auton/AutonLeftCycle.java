@@ -96,20 +96,14 @@ public class AutonLeftCycle extends LinearOpMode {
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         ArmSubsystem arm = new ArmSubsystem(armL, armR);
-        ClawSubsystem claw = new ClawSubsystem(clawServo);
+        WristSubsystem wrist1 = new WristSubsystem(clawServo);
         WristSubsystem wrist = new WristSubsystem(wristServo);
         LiftSubsystem lift = new LiftSubsystem(liftLeft, rightFront, gamepadEx1::getLeftY);
         initCamera();
 
         drive.setPoseEstimate(startPose);
         //wrist.flip();
-        sleep(1000);
-        arm.away();
-        sleep(1000);
-        claw.release();
-        sleep(500);
-        arm.mid();
-        sleep(500);
+
         //lift.setJunction(Junction.NONE);
         delayTimer.reset();
         while (!isStarted() && !isStopRequested()) {
@@ -143,40 +137,42 @@ public class AutonLeftCycle extends LinearOpMode {
 
 
         currentState = DRIVE_PHASE.WAIT_FOR_PRELOAD;
-
         while (opModeIsActive() && !isStopRequested()) {
             switch (currentState) {
                 case WAIT_FOR_PRELOAD:
+                    sleep(1000);
+                    arm.away();
+                    sleep(1000);
+                    wrist1.flip();
+                    sleep(500);
+                    arm.mid();
+                    sleep(500);
                     wrist.home();
                     if(tagOfInterest == null) {
-                        drive.followTrajectoryAsync(drive.trajectoryBuilder(drive.getPoseEstimate())
-                                .forward(10)
-                                .build());
-                    }else if(tagOfInterest.id == 0) {
-
-                        drive.followTrajectoryAsync(drive.trajectoryBuilder(drive.getPoseEstimate())
-                                        .forward(10)
-                                        //.strafeRight(10)
-                                .build());
-
-                        lift.setHigh();
-
-                    }else if(tagOfInterest.id == 1){
-                        drive.followTrajectoryAsync(drive.trajectoryBuilder(drive.getPoseEstimate())
-                                        .forward(10)
-                                .build());
-                    }else if(tagOfInterest.id == 2){
-                        drive.followTrajectoryAsync(drive.trajectoryBuilder(drive.getPoseEstimate())
-                                        .forward(10)
-
-                                .build());
-                    }
-//                    delayedLift = true;
+                            drive.followTrajectoryAsync(drive.trajectoryBuilder(drive.getPoseEstimate())
+                                    .strafeLeft(15)
+                                    .build());
+                        }else if(tagOfInterest.id == 1) {
+                            drive.followTrajectoryAsync(drive.trajectoryBuilder(drive.getPoseEstimate())
+                                    .forward(30)
+                                            .strafeLeft(20)
+                                    .build());
+                        }else if(tagOfInterest.id == 0){
+                            drive.followTrajectoryAsync(drive.trajectoryBuilder(drive.getPoseEstimate())
+                                            .forward(30)
+                                    .build());
+                        }else if(tagOfInterest.id == 2){
+                            drive.followTrajectoryAsync(drive.trajectoryBuilder(drive.getPoseEstimate())
+                                    .forward(30)
+                                    .strafeRight(20)
+                                    .build());
+                        }
+                    delayedLift = true;
 //                    drive.followTrajectoryAsync(drive.trajectoryBuilder(startPose)
-//                            .lineTo(new Vector2d(29.16877, 0.158853) )
+//                            .lineTo(new Vector2d(50.16877, 0.158853) )
 //                            .build());
-//                    //slideSub.setPos(0.42);
-//                    currentState = DRIVE_PHASE.SLIDE;
+                    //slideSub.setPos(0.42);
+                    currentState = DRIVE_PHASE.SLIDE;
 
                     break;
                 case SLIDE:
@@ -186,23 +182,23 @@ public class AutonLeftCycle extends LinearOpMode {
                     break;
                 case PARK:
                     if(!drive.isBusy()){
-                        if(tagOfInterest == null) {
-                            drive.followTrajectoryAsync(drive.trajectoryBuilder(drive.getPoseEstimate())
-                                    .lineToLinearHeading(new Pose2d(48, 0.2*reverse, Math.toRadians(180)*reverse))
-                                    .build());
-                        }else if(tagOfInterest.id == 0) {
-                            drive.followTrajectoryAsync(drive.trajectoryBuilder(drive.getPoseEstimate())
-                                    .lineToLinearHeading(new Pose2d(45, 24.52*reverse, Math.toRadians(90)*reverse))
-                                    .build());
-                        }else if(tagOfInterest.id == 1){
-                            drive.followTrajectoryAsync(drive.trajectoryBuilder(drive.getPoseEstimate())
-                                    .lineToLinearHeading(new Pose2d(48, 0.2*reverse, Math.toRadians(180)*reverse))
-                                    .build());
-                        }else if(tagOfInterest.id == 2){
-                            drive.followTrajectoryAsync(drive.trajectoryBuilder(drive.getPoseEstimate())
-                                    .lineToLinearHeading(new Pose2d(47, -24.52*reverse, Math.toRadians(180)*reverse))
-                                    .build());
-                        }
+//                        if(tagOfInterest == null) {
+//                            drive.followTrajectoryAsync(drive.trajectoryBuilder(drive.getPoseEstimate())
+//                                    .lineToLinearHeading(new Pose2d(30.1677, -20*reverse, Math.toRadians(180)*reverse))
+//                                    .build());
+//                        }else if(tagOfInterest.id == 1) {
+//                            drive.followTrajectoryAsync(drive.trajectoryBuilder(drive.getPoseEstimate())
+//                                    .lineToLinearHeading(new Pose2d(30.1677, -20*reverse, Math.toRadians(90)*reverse))
+//                                    .build());
+//                        }else if(tagOfInterest.id == 0){
+//                            drive.followTrajectoryAsync(drive.trajectoryBuilder(drive.getPoseEstimate())
+//                                    .lineToLinearHeading(new Pose2d(48, 0.2*reverse, Math.toRadians(180)*reverse))
+//                                    .build());
+//                        }else if(tagOfInterest.id == 2){
+//                            drive.followTrajectoryAsync(drive.trajectoryBuilder(drive.getPoseEstimate())
+//                                    .lineToLinearHeading(new Pose2d(47, -24.52*reverse, Math.toRadians(180)*reverse))
+//                                    .build());
+//                        }
                         currentState = DRIVE_PHASE.IDLE;
                     }
                     break;

@@ -15,9 +15,10 @@ public class ArmSubsystem extends SubsystemBase {
 
     private final ServoEx left;
     private final ServoEx right;
-    public static double home = 0.86;
+    public static double home = 0.81;
     public static double away = 0.32;
-    public static double scaleFactor = .25;
+    public static double down = 0.1;
+    public static double scaleFactor =.25;
     public static double mid = 0.55;
     public double valueRight = .32;
     public double valueLeft = .32;
@@ -27,6 +28,7 @@ public class ArmSubsystem extends SubsystemBase {
     public ArmSubsystem(ServoEx left, ServoEx right){
         this.left = left;
         this.right = right;
+        adouble = () -> 0;
     }
 
     public ArmSubsystem(ServoEx left, ServoEx right, DoubleSupplier adouble){
@@ -59,10 +61,15 @@ public class ArmSubsystem extends SubsystemBase {
 //        right.setPosition(mid);
     }
 
+    public void deposit(){
+        valueLeft=down;
+        valueRight=down;
+    }
+
     @Override
     public void periodic(){
         left.setPosition(valueLeft+(scaleFactor* adouble.getAsDouble()));
-        right.setPosition(valueRight+(scaleFactor*adouble.getAsDouble()));
+        right.setPosition(valueRight+(scaleFactor* adouble.getAsDouble()));
     }
 
     public Command runHomeCommand() {
