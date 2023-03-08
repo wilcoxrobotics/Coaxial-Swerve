@@ -3,23 +3,13 @@ package org.firstinspires.ftc.teamcode.vision;
 import android.annotation.SuppressLint;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.arcrobotics.ftclib.hardware.SimpleServo;
-import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.command.arm.Mid;
-import org.firstinspires.ftc.teamcode.command.claw.Release;
-import org.firstinspires.ftc.teamcode.command.wrist.UnFlip;
-import org.firstinspires.ftc.teamcode.opmode.auton.AutonLeftCycle;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
-import org.firstinspires.ftc.teamcode.subsystem.ArmSubsystem;
-import org.firstinspires.ftc.teamcode.subsystem.ClawSubsystem;
-import org.firstinspires.ftc.teamcode.subsystem.WristSubsystem;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -29,7 +19,7 @@ import org.openftc.apriltag.AprilTagDetection;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "Signal Sleeve Test")
+@Autonomous(name = "Signal Sleeve Test Ez")
 @Config
 public class VisionTest extends LinearOpMode
 {
@@ -37,9 +27,10 @@ public class VisionTest extends LinearOpMode
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
     static final double FEET_PER_METER = 3.28084;
-    static int forward = 20;
-    static int strafe = 20;
-
+    public static int forward = 24;
+    public static int strafe = 45;
+    public static int rightF = 24;
+    public static int rightS = 45;
     // Lens intrinsics
     // UNITS ARE PIXELS
     // NOTE: this calibration is for the C920 webcam at 800x448.
@@ -57,10 +48,10 @@ public class VisionTest extends LinearOpMode
     int MIDDLE = 2;
     int RIGHT = 3;
 
-    public static boolean hasRanAuto;
-
     AprilTagDetection tagOfInterest = null;
+
     @Override
+
     public void runOpMode()
     {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -86,30 +77,10 @@ public class VisionTest extends LinearOpMode
 
         telemetry.setMsTransmissionInterval(50);
 
-        AutonLeftCycle.DRIVE_PHASE currentState = AutonLeftCycle.DRIVE_PHASE.IDLE;
         /*
          * The INIT-loop:
          * This REPLACES waitForStart!
          */
-//        DcMotorSimple liftMotor = hardwareMap.get(DcMotorSimple.class, "slideL");
-//        MotorEx rightFront = new MotorEx(hardwareMap, "rightFront");
-//        SimpleServo clawServo = new SimpleServo(hardwareMap, "claw", 0, 360);
-//        SimpleServo armL = new SimpleServo(hardwareMap, "armL", 0, 360);
-//        SimpleServo armR = new SimpleServo(hardwareMap, "armR", 0, 360);
-//        SimpleServo wristServo = new SimpleServo(hardwareMap, "wrist", 0, 180);
-//        DcMotorSimple liftLeft = hardwareMap.get(DcMotorSimple.class, "slideL");
-//        AutonLeftCycle.DRIVE_PHASE currentState = AutonLeftCycle.DRIVE_PHASE.IDLE;
-//        ArmSubsystem arm = new ArmSubsystem(armL, armR);
-//        ClawSubsystem claw = new ClawSubsystem(clawServo);
-//        WristSubsystem wrist = new WristSubsystem(wristServo);
-//        claw.release();
-//        arm.mid();
-//        wrist.home();
-
-        waitForStart();
-
-
-        //initShit();
         while (!isStarted() && !isStopRequested())
         {
             ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
@@ -169,6 +140,7 @@ public class VisionTest extends LinearOpMode
             sleep(20);
         }
 
+
         /*
          * The START command just came in: now work off the latest snapshot acquired
          * during the init loop.
@@ -185,47 +157,37 @@ public class VisionTest extends LinearOpMode
         {
             telemetry.addLine("No tag snapshot available, it was never sighted during the init loop :(");
             telemetry.update();
-
         }
         TrajectorySequence parkTrajectory = null;
         if(tagOfInterest == null){
             //default trajectory here if preferred
         }else if(tagOfInterest.id == LEFT){
             parkTrajectory = drive.trajectorySequenceBuilder(new Pose2d())
-                    .forward(-forward)
-                    .strafeLeft(strafe)
+                    .back(forward)
+                    .strafeRight(strafe)
                     //.strafeLeft(40)
                     .build();
 
             //left trajectory
         }else if(tagOfInterest.id == MIDDLE){
             parkTrajectory = drive.trajectorySequenceBuilder(new Pose2d())
-                    .forward(-forward)
+                    .back(forward)
                     .build();
             //middle trajectory
 
         }else{
             parkTrajectory = drive.trajectorySequenceBuilder(new Pose2d())
-                    .forward(-forward)
-                    .strafeRight(strafe)
+                    .back(forward+2)
+                    .strafeLeft(43)
                     .build();
+
         }
 
+        drive.followTrajectorySequence(parkTrajectory);
         /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
-            while (opModeIsActive() && !isStopRequested()) {
-                currentState = AutonLeftCycle.DRIVE_PHASE.WAIT_FOR_PRELOAD;
-                switch (currentState) {
-                    case WAIT_FOR_PRELOAD:
-                        drive.followTrajectorySequence(parkTrajectory);
-                        currentState = AutonLeftCycle.DRIVE_PHASE.SLIDE;
-                        break;
-                }
-            }
-
+        while (opModeIsActive()) {sleep(20);}
     }
-    public void initShit(){
 
-    }
     @SuppressLint("DefaultLocale")
     void tagToTelemetry(AprilTagDetection detection)
     {

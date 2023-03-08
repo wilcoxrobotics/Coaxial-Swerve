@@ -38,7 +38,7 @@ public class MainOpMode extends BaseOpMode {
         DriveSlowMode slowMode = new DriveSlowMode(drive, gamepadEx1::getLeftX,
                 gamepadEx1::getLeftY, gamepadEx1::getRightX);
 
-        gb1(GamepadKeys.Button.LEFT_STICK_BUTTON).whileHeld(slowMode);
+        gb1(GamepadKeys.Button.START).toggleWhenPressed(slowMode);
 
         gb1(GamepadKeys.Button.LEFT_BUMPER).toggleWhenPressed(new Grab(claw), new Release(claw));
         gb1(GamepadKeys.Button.A).whenPressed(new SetJunction(lift, Junction.NONE));
@@ -46,7 +46,7 @@ public class MainOpMode extends BaseOpMode {
         gb1(GamepadKeys.Button.B).whenPressed(new SetJunction(lift, Junction.MEDIUM));
         gb1(GamepadKeys.Button.Y).whenPressed(new SetJunction(lift, Junction.HIGH));
         gb1(GamepadKeys.Button.RIGHT_BUMPER).toggleWhenPressed(new FlipAndAway(wrist, arm, claw), new UnFlipAndHome(wrist, arm, claw));
-        gb1(GamepadKeys.Button.START).whenPressed(new GreatReset(arm,wrist, claw,lift));
+//        gb1(GamepadKeys.Button.).whenPressed(new GreatReset(arm,wrist, claw,lift));
         gb1(GamepadKeys.Button.DPAD_UP).whenPressed(new AutoGrabRotateMoveLift(arm, wrist, claw, lift, Junction.HIGH));
         gb1(GamepadKeys.Button.DPAD_LEFT).whenPressed(new Mid(arm));
         gb1(GamepadKeys.Button.DPAD_RIGHT).whenPressed(new AutoGrabRotateMoveLift(arm,wrist,claw,lift,Junction.LOW));

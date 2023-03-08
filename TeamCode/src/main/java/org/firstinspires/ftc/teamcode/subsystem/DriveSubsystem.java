@@ -13,7 +13,7 @@ public class DriveSubsystem extends SubsystemBase {
     private final MecanumDrive drive;
 
     public static double slowModeFactor = 3;
-
+    public static double slowRotScale = .75;
     public DriveSubsystem(MotorEx leftBack, MotorEx leftFront, MotorEx rightBack, MotorEx rightFront){
         drive = new MecanumDrive(leftFront, rightFront, leftBack, rightBack);
     }
@@ -24,13 +24,13 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public void driveRobotCentric(double strafeSpeed, double forwardSpeed, double turnSpeed){
-        drive.driveRobotCentric(-strafeSpeed, -forwardSpeed, -turnSpeed);
+        drive.driveRobotCentric(-strafeSpeed, -forwardSpeed, -turnSpeed*slowRotScale);
     }
 
     public void driveRobotCentricSlowMode(double strafeSpeed, double forwardSpeed, double turnSpeed) {
-        drive.driveRobotCentric(strafeSpeed / slowModeFactor,
-                forwardSpeed / slowModeFactor,
-                turnSpeed / slowModeFactor);
+        drive.driveRobotCentric(-strafeSpeed / slowModeFactor,
+                -forwardSpeed / slowModeFactor,
+                -turnSpeed / slowModeFactor);
     }
 
 //    public Command runRobotCentricCommand(double strafeSpeed, double forwardSpeed, double turnSpeed) {
