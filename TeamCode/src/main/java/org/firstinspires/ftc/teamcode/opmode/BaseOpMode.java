@@ -11,8 +11,12 @@ import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
+import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystem.*;
 import org.firstinspires.ftc.teamcode.util.Junction;
+import org.firstinspires.ftc.teamcode.vision.CVMaster;
 
 public class BaseOpMode extends CommandOpMode {
 
@@ -26,8 +30,10 @@ public class BaseOpMode extends CommandOpMode {
     protected LiftSubsystem lift;
     protected ArmSubsystem arm;
     protected WristSubsystem wrist;
+    protected SampleMecanumDrive autoDrive;
 //    protected WristSubsystem wrist1;
-    protected RevColorSensorV3 colorSensor;
+    protected NormalizedColorSensor colorSensor;
+    protected ColorSensorSubsystem color;
     protected RevIMU imu;
 
     protected GamepadEx gamepadEx1;
@@ -37,18 +43,21 @@ public class BaseOpMode extends CommandOpMode {
     public void initialize() {
         gamepadEx1 = new GamepadEx(gamepad1);
         gamepadEx2 = new GamepadEx(gamepad2);
-
+        autoDrive = new SampleMecanumDrive(hardwareMap);
         initHardware();
         setUp();
-
+        CVMaster cv = new CVMaster(this);
+//      call the function to startStreaming
+        cv.observeStick();
         drive = new DriveSubsystem(leftBack, leftFront, rightBack, rightFront);
         lift = new LiftSubsystem(liftLeft,  rightFront, gamepadEx1::getRightY );
 //        wrist1 = new WristSubsystem(clawServo);
         claw = new ClawSubsystem(clawServo);
         arm = new ArmSubsystem(armL,armR);
         wrist = new WristSubsystem(wristServo);
-
+        color = new ColorSensorSubsystem(colorSensor);
         lift.setJunction(Junction.NONE);
+        arm.mid();
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         telemetry.addData("Mode", "Done initializing");
         telemetry.update();
@@ -75,16 +84,21 @@ public class BaseOpMode extends CommandOpMode {
 
     }
     protected void setUp(){
-        leftBack.setInverted(true);
+        //leftBack.setInverted(true);
         wristServo.setInverted(true);
         clawServo.setInverted(true);
         armR.setInverted(true);
         rightBack.resetEncoder();
+        rightFront.resetEncoder();
+        leftFront.resetEncoder();
+        leftBack.resetEncoder();
     }
 
     @Override
     public void run() {
         super.run();
+        NormalizedRGBA colors = colorSensor.getNormalizedColors();
+        autoDrive.update();
         tad("leftBack Power", leftBack.motor.getPower());
         tad("leftFront Power", leftFront.motor.getPower());
         tad("rightBack Power", rightBack.motor.getPower());
@@ -100,9 +114,13 @@ public class BaseOpMode extends CommandOpMode {
         tad("armL servo position", armL.getPosition());
         tad("armR servo position", armR.getPosition());
         tad("claw servo position", clawServo.getPosition());
-        telemetry.addData("Red", colorSensor.red());
-        telemetry.addData("Green", colorSensor.green());
-        telemetry.addData("Blue", colorSensor.blue());
+//        telemetry.addData("Red", colorSensor.red());
+//        telemetry.addData("Green", colorSensor.green());
+//        telemetry.addData("Blue", colorSensor.blue());
+//        telemetry.addLine()
+//                .addData("Red", "%.3f", colors.red)
+//                .addData("Green", "%.3f", colors.green)
+//                .addData("Blue", "%.3f", colors.blue);
         telemetry.update();
 
     }

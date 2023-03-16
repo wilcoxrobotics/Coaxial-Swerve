@@ -135,8 +135,10 @@ public class SampleMecanumDrive extends MecanumDrive {
         // TODO: reverse any motors using DcMotor.setDirection()
 //        rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
 //        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-//        leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+        //leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+//        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+
 
 
         //rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -167,7 +169,6 @@ public class SampleMecanumDrive extends MecanumDrive {
                 MAX_ANG_VEL, MAX_ANG_ACCEL
         );
     }
-
     public void turnAsync(double angle) {
         trajectorySequenceRunner.followTrajectorySequenceAsync(
                 trajectorySequenceBuilder(getPoseEstimate())
@@ -175,12 +176,10 @@ public class SampleMecanumDrive extends MecanumDrive {
                         .build()
         );
     }
-
     public void turn(double angle) {
         turnAsync(angle);
         waitForIdle();
     }
-
     public void followTrajectoryAsync(Trajectory trajectory) {
         trajectorySequenceRunner.followTrajectorySequenceAsync(
                 trajectorySequenceBuilder(trajectory.start())
@@ -188,7 +187,6 @@ public class SampleMecanumDrive extends MecanumDrive {
                         .build()
         );
     }
-
     public void followTrajectory(Trajectory trajectory) {
         followTrajectoryAsync(trajectory);
         waitForIdle();

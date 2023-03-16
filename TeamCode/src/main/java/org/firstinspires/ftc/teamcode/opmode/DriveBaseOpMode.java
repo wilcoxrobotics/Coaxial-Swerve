@@ -9,6 +9,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.RevIMU;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
+import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystem.DriveSubsystem;
 
 import java.math.BigDecimal;
@@ -19,6 +20,7 @@ public class DriveBaseOpMode extends CommandOpMode {
     protected DriveSubsystem drive;
     protected GamepadEx gamepadEx1;
     protected RevIMU imu;
+    protected SampleMecanumDrive autoDrive;
     @Override
     public void initialize() {
        gamepadEx1 = new GamepadEx(gamepad1);
@@ -27,7 +29,7 @@ public class DriveBaseOpMode extends CommandOpMode {
        imu = new RevIMU(hardwareMap);
        imu.init();
        drive = new DriveSubsystem(fL, fR, bL, bR);
-
+       autoDrive = new SampleMecanumDrive(hardwareMap);
        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
        telemetry.addData("Mode", "Done initializing");
        telemetry.update();
@@ -49,6 +51,7 @@ public class DriveBaseOpMode extends CommandOpMode {
         tad("leftBack Power", round(bL.motor.getPower()));
         tad("rightFront Power", round(fR.motor.getPower()));
         tad("rightBack Power", round(bR.motor.getPower()));
+
         telemetry.update();
     }
 

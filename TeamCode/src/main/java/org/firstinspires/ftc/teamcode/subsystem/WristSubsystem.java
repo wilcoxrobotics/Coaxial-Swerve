@@ -28,4 +28,5 @@ public class WristSubsystem extends SubsystemBase {
     public static String getMode() {
         return mode;
     }
+
 }

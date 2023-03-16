@@ -22,18 +22,18 @@ public class LiftSubsystem extends SubsystemBase {
     private Junction currentGoal;
 
     // tune
-    public static int none = 0;
+    public static int none = 50;
     public static int ground = 150;
     public static int low = 800; // 837
     public static int medium = 1650;
     public static int high = 2350;
 
-    public static double kP = 0.012;
+    public static double kP = 0.00;
     public static double kI = 0;
     public static double kD = 0.0005;
-    public static double kG = 0.01;
-    public static double maxVelocity = 4000;
-    public static double maxAcceleration = 7000;
+    public static double kG = 0.041;
+    public static double maxVelocity = 10000;
+    public static double maxAcceleration = 10000;
     private final ProfiledPIDController controller = new ProfiledPIDController(kP, kI, kD,
             new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration));
 

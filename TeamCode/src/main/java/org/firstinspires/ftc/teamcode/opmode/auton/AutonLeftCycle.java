@@ -79,6 +79,7 @@ public class AutonLeftCycle extends LinearOpMode {
 
     public static int distance;
 
+
     @Override
     public void runOpMode() throws InterruptedException {
         gamepadEx1 = new GamepadEx(gamepad1);

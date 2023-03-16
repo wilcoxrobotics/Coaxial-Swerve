@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.vision;
+package org.firstinspires.ftc.teamcode.opmode;
 
 import android.annotation.SuppressLint;
 import com.acmerobotics.dashboard.config.Config;
@@ -10,27 +10,36 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.roadrunner.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.vision.AprilTagDetectionPipeline;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-import org.openftc.apriltag.AprilTagDetection;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.openftc.apriltag.AprilTagDetection;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvInternalCamera;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "Signal Sleeve Test Ez")
+@Disabled
+@Autonomous(name = "Signal Sleeve Test")
 @Config
- public class VisionTest extends LinearOpMode
+public class VisionTest extends LinearOpMode
 {
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
     static final double FEET_PER_METER = 3.28084;
-    public static int forward = 24;
-    public static int strafe = 45;
-    public static int rightF = 24;
-    public static int rightS = 45;
+    static int forward = 20;
+    static int strafe = 20;
+
     // Lens intrinsics
     // UNITS ARE PIXELS
     // NOTE: this calibration is for the C920 webcam at 800x448.
@@ -55,7 +64,7 @@ import java.util.ArrayList;
     public void runOpMode()
     {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "cam"), cameraMonitorViewId);
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
@@ -140,7 +149,6 @@ import java.util.ArrayList;
             sleep(20);
         }
 
-
         /*
          * The START command just came in: now work off the latest snapshot acquired
          * during the init loop.
@@ -163,29 +171,31 @@ import java.util.ArrayList;
             //default trajectory here if preferred
         }else if(tagOfInterest.id == LEFT){
             parkTrajectory = drive.trajectorySequenceBuilder(new Pose2d())
-                    .back(forward)
-                    .strafeRight(strafe)
+                    .forward(forward)
+                    .strafeLeft(strafe)
                     //.strafeLeft(40)
                     .build();
 
             //left trajectory
         }else if(tagOfInterest.id == MIDDLE){
             parkTrajectory = drive.trajectorySequenceBuilder(new Pose2d())
-                    .back(forward)
+                    .forward(forward)
                     .build();
             //middle trajectory
 
         }else{
             parkTrajectory = drive.trajectorySequenceBuilder(new Pose2d())
-                    .back(forward+2)
-                    .strafeLeft(43)
+                    .forward(forward)
+                    .strafeRight(strafe)
                     .build();
 
         }
 
-        drive.followTrajectorySequence(parkTrajectory);
+
         /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
-        while (opModeIsActive()) {sleep(20);}
+        while (opModeIsActive()) {
+            sleep(20);
+        }
     }
 
     @SuppressLint("DefaultLocale")
